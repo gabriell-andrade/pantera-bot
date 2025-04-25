@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
             buscarJogadores();
         } else {
             try {
-                const res = await fetch(`/api/resposta/${comando}`);
+                const res = await fetch("https://panterinha-api.onrender.com/api/resposta/...");
                 const data = await res.json();
                 setTimeout(() => {
                     addMessage(data.resposta, "bot-msg");

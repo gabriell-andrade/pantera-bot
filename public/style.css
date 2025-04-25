@@ -2,11 +2,11 @@ body {
     font-family: Arial, sans-serif;
     background-color: #0f0f0f;
     color: #fff;
+    margin: 0;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
 }
 
 .chat-container {
@@ -110,4 +110,29 @@ button {
 
 .jogador-card .info span {
     font-weight: bold;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.header img {
+    width: 120px;
+    height: auto;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header img {
+    width: 120px;
+    height: auto;
 }
