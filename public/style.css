@@ -146,3 +146,26 @@ button {
         transform: translateY(0);
     }
 }
+
+.ajuda-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.ajuda-botoes button {
+    background: #2a2a2a;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, color 0.2s;
+}
+
+.ajuda-botoes button:hover {
+    background: #00ff88;
+    color: #000;
+}

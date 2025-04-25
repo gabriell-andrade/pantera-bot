@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 3001;
+const PORT = 3000;
 
 // Serve os arquivos das pastas public e src
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,6 +20,7 @@ app.get('/api/resposta/:comando', (req, res) => {
     };
 
     const resposta = respostas[comando] || "🤔 Eita! Não entendi. Tenta: agenda, noticias, curiosidades, jogadores ou quizfurioso.";
+
     res.json({ resposta });
 });
 

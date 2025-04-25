@@ -1,3 +1,4 @@
+const API_URL = "http://localhost:3000";
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("chat-form");
     const input = document.getElementById("user-input");
@@ -25,16 +26,26 @@ document.addEventListener("DOMContentLoaded", () => {
             iniciarQuiz();
         } else if (comando === "jogadores") {
             buscarJogadores();
+        } else if (comando === "ajuda" || comando === "/ajuda" || comando === "help") {
+            mostrarAjuda();
         } else {
             try {
-                const res = await fetch("https://panterinha-api.onrender.com/api/resposta/...");
+                const res = await fetch(`${API_URL}/api/resposta/${comando}`);
                 const data = await res.json();
-                setTimeout(() => {
-                    addMessage(data.resposta, "bot-msg");
+
+                if (res.ok) {
+                    if (data.resposta.includes("🤔 Eita!")) {
+                        addMessage("🤔 Não entendi, torcedor! Tenta digitar /ajuda pra ver os comandos disponíveis!", "bot-msg");
+                    } else {
+                        addMessage(data.resposta, "bot-msg");
+                    }
                     chatBox.scrollTop = chatBox.scrollHeight;
-                }, 500);
-            } catch (err) {
-                addMessage("❌ Erro ao buscar resposta do servidor!", "bot-msg");
+                } else {
+                    addMessage("❌ Erro no servidor! Tente novamente mais tarde.", "bot-msg");
+                }
+            } catch (error) {
+                console.error(error);
+                addMessage("❌ Erro de conexão. Verifique sua internet.", "bot-msg");
             }
         }
 
@@ -109,4 +120,36 @@ document.addEventListener("DOMContentLoaded", () => {
         msg.textContent = text;
         chatBox.appendChild(msg);
     }
+
+    function mostrarAjuda() {
+        const msg = document.createElement("div");
+        msg.className = "bot-msg";
+        msg.textContent = "📋 Comandos disponíveis:";
+        chatBox.appendChild(msg);
+
+        const botoes = [
+            { texto: "Agenda", comando: "agenda" },
+            { texto: "Notícias", comando: "noticias" },
+            { texto: "Curiosidades", comando: "curiosidades" },
+            { texto: "Jogadores", comando: "jogadores" },
+            { texto: "Quiz", comando: "quizfurioso" }
+        ];
+
+        const container = document.createElement("div");
+        container.className = "ajuda-botoes";
+
+        botoes.forEach(btn => {
+            const botao = document.createElement("button");
+            botao.textContent = btn.texto;
+            botao.onclick = () => {
+                input.value = btn.comando;
+                form.dispatchEvent(new Event("submit"));
+            };
+            container.appendChild(botao);
+        });
+
+        chatBox.appendChild(container);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
 });
