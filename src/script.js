@@ -14,6 +14,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
         addMessage(userMsg, "user-msg");
 
+        input.value = "";
+
+        function addMessage(text, className) {
+            const msg = document.createElement("div");
+
+            if (className === "bot-msg") {
+                msg.className = className + " fade-in";
+            } else {
+                msg.className = className;
+            }
+
+            msg.textContent = text;
+            chatBox.appendChild(msg);
+
+            if (msg.classList.contains("fade-in")) {
+                setTimeout(() => {
+                    msg.classList.remove("fade-in");
+                }, 500);
+            }
+        }
+
+
         if (quizAtivo) {
             addMessage("🛑 Responda usando os botões acima!", "bot-msg");
             input.value = "";
@@ -22,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const comando = userMsg.toLowerCase();
 
-        if (comando === "quizfurioso") {
+        if (comando === "quiz") {
             iniciarQuiz();
         } else if (comando === "jogadores") {
             buscarJogadores();
@@ -34,18 +56,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await res.json();
 
                 if (res.ok) {
-                    if (data.resposta.includes("🤔 Eita!")) {
-                        addMessage("🤔 Não entendi, torcedor! Tenta digitar /ajuda pra ver os comandos disponíveis!", "bot-msg");
-                    } else {
-                        addMessage(data.resposta, "bot-msg");
-                    }
-                    chatBox.scrollTop = chatBox.scrollHeight;
+                    const respostaBot = data.resposta.includes("🤔 Eita!")
+                        ? "🤔 Não entendi, torcedor! Tenta digitar /ajuda pra ver os comandos disponíveis!"
+                        : data.resposta;
+
+                    mostrarDigitando(respostaBot);
                 } else {
-                    addMessage("❌ Erro no servidor! Tente novamente mais tarde.", "bot-msg");
+                    mostrarDigitando("❌ Erro no servidor! Tente novamente mais tarde.");
                 }
             } catch (error) {
                 console.error(error);
-                addMessage("❌ Erro de conexão. Verifique sua internet.", "bot-msg");
+                mostrarDigitando("❌ Erro de conexão. Verifique sua internet.");
             }
         }
 
@@ -79,13 +100,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 quizAtivo = false;
                 opcoesContainer.remove();
-                chatBox.scrollTop = chatBox.scrollHeight;
+                chatBox.scrollTo({
+                    top: chatBox.scrollHeight,
+                    behavior: "smooth"
+                });
+
             };
             opcoesContainer.appendChild(botao);
         });
 
         chatBox.appendChild(opcoesContainer);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chatBox.scrollTo({
+            top: chatBox.scrollHeight,
+            behavior: "smooth"
+        });
+
     }
 
     async function buscarJogadores() {
@@ -108,7 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 chatBox.appendChild(card);
             });
 
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBox.scrollTo({
+                top: chatBox.scrollHeight,
+                behavior: "smooth"
+            });
+
         } catch (error) {
             addMessage("❌ Erro ao carregar jogadores!", "bot-msg");
         }
@@ -132,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
             { texto: "Notícias", comando: "noticias" },
             { texto: "Curiosidades", comando: "curiosidades" },
             { texto: "Jogadores", comando: "jogadores" },
-            { texto: "Quiz", comando: "quizfurioso" }
+            { texto: "Quiz", comando: "quiz" }
         ];
 
         const container = document.createElement("div");
@@ -149,7 +182,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         chatBox.appendChild(container);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chatBox.scrollTo({
+            top: chatBox.scrollHeight,
+            behavior: "smooth"
+        });
+
+    }
+
+    function mostrarDigitando(resposta) {
+        const typingMsg = document.createElement("div");
+        typingMsg.className = "bot-msg typing";
+        typingMsg.textContent = "🐾 Panterinha está digitando";
+        chatBox.appendChild(typingMsg);
+        chatBox.scrollTo({
+            top: chatBox.scrollHeight,
+            behavior: "smooth"
+        });
+
+
+        let dots = 0;
+        const interval = setInterval(() => {
+            dots = (dots + 1) % 4;
+            typingMsg.textContent = "🐾 Panterinha está digitando" + ".".repeat(dots);
+        }, 500);
+
+        const tempo = Math.min(3000, Math.max(1000, resposta.length * 50));
+
+        setTimeout(() => {
+            clearInterval(interval);
+            typingMsg.remove();
+            addMessage(resposta, "bot-msg");
+            chatBox.scrollTo({
+                top: chatBox.scrollHeight,
+                behavior: "smooth"
+            });
+
+        }, tempo);
     }
 
 });

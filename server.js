@@ -57,7 +57,6 @@ app.get('/api/jogadores', (req, res) => {
     res.json(jogadores);
 });
 
-// Inicia o servidor
 app.listen(PORT, () => {
     console.log(`🔥 Panterinha rodando em http://localhost:${PORT}`);
 });
