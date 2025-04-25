@@ -27,3 +27,4 @@ app.get('/api/resposta/:comando', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🔥 Panterinha rodando em http://localhost:${PORT}`);
 });
+

@@ -63,3 +63,25 @@ button {
     font-weight: bold;
     cursor: pointer;
 }
+
+.quiz-opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.quiz-opcoes button {
+    background: #222;
+    color: #fff;
+    border: 1px solid #00ff88;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.quiz-opcoes button:hover {
+    background: #00ff88;
+    color: #000;
+}
