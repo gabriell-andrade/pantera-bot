@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
         addMessage(userMsg, "user-msg");
 
         if (quizAtivo) {
-            // Ignora entradas de texto durante o quiz
             addMessage("🛑 Responda usando os botões acima!", "bot-msg");
             input.value = "";
             return;
@@ -24,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (comando === "quizfurioso") {
             iniciarQuiz();
+        } else if (comando === "jogadores") {
+            buscarJogadores();
         } else {
             try {
                 const res = await fetch(`/api/resposta/${comando}`);
@@ -74,6 +75,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chatBox.appendChild(opcoesContainer);
         chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function buscarJogadores() {
+        try {
+            const res = await fetch("/api/jogadores");
+            const jogadores = await res.json();
+
+            jogadores.forEach(jogador => {
+                const card = document.createElement("div");
+                card.className = "jogador-card";
+
+                card.innerHTML = `
+            <img src="${jogador.imagem}" alt="${jogador.nome}">
+            <div class="info">
+              <span>${jogador.nome}</span>
+              <small>${jogador.funcao}</small>
+            </div>
+          `;
+
+                chatBox.appendChild(card);
+            });
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (error) {
+            addMessage("❌ Erro ao carregar jogadores!", "bot-msg");
+        }
     }
 
     function addMessage(text, className) {
