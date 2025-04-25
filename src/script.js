@@ -3,32 +3,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("user-input");
     const chatBox = document.getElementById("chat-box");
 
-    const respostas = {
-        agenda: "🗓️ Próximo jogo da FURIA é contra a NAVI, dia 30/04 às 18h no ESL Pro League!",
-        noticias: "📰 Última: KSCERATO dropou 40 kills e levou o MVP da rodada!",
-        curiosidades: "🐾 Sabia que a FURIA é o time brasileiro com mais vitórias internacionais em 2023?",
-        jogadores: "👥 Jogadores: KSCERATO, yuurih, arT, chelo, FalleN.",
-        quizfurioso: "🎯 Ainda estou ficando afiado com quiz! Em breve, torcedor!",
-        default: "🤔 Eita! Não entendi. Tenta: agenda, noticias, curiosidades, jogadores ou quizfurioso."
-    };
-
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const userMsg = input.value.trim();
         if (!userMsg) return;
 
-        // Mostra a mensagem do usuário
         addMessage(userMsg, "user-msg");
 
-        // Processa o comando (sem case sensitive)
-        const comando = userMsg.toLowerCase();
-        const resposta = respostas[comando] || respostas.default;
-
-        // Resposta do Panterinha
-        setTimeout(() => {
-            addMessage(resposta, "bot-msg");
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }, 500);
+        try {
+            const res = await fetch(`/api/resposta/${userMsg.toLowerCase()}`);
+            const data = await res.json();
+            setTimeout(() => {
+                addMessage(data.resposta, "bot-msg");
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
+        } catch (err) {
+            addMessage("❌ Erro ao buscar resposta do servidor!", "bot-msg");
+        }
 
         input.value = "";
     });
@@ -40,3 +31,4 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.appendChild(msg);
     }
 });
+
